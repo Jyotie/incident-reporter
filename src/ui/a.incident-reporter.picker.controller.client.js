@@ -1,4 +1,4 @@
-var DEVELOPER_KEY = 'APPLICATION_DEVELOPER_KEY';
+var DEVELOPER_KEY = 'AIzaSyCwQxkZsb6_OUI8LRHbEgR1UzxswOodGvM';
 var DIALOG_DIMENSIONS = {width: 600, height: 425};
 var pickerApiLoaded = false;
 

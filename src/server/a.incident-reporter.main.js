@@ -14,10 +14,14 @@
 
 
 /**
- * Displays an HTML Service dialog in Google Sheets that contains client-side
- * JavaScript code for the Google Picker API.
+ * Configuration parameters that are passed into the configuration
+ * factory constructor.
+ * 
+ * @return {myproj.json.Configuration} Default configuration settings.
  */
-function showPicker() {
-  showDialog('a.my-project.picker.view', 600, 425,
-          'Upload or select grade book files');
+function getDefaultConfiguration_() {
+  return {
+    debug: false,
+    debugSpreadsheetId: null,
+  };
 }

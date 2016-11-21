@@ -27,6 +27,6 @@
  function provideEnvironmentConfiguration_(configuration) {
   // Change ID below to a Spreadsheet ID you can read
   configuration.debugSpreadsheetId =
-      'DRIVE_FILE_ID';
+      '1-uVSQiE0Sk1kOHpqTmWrVL-fdbCz3_Q0bg6uCLJMAw0';
   return configuration;
 }

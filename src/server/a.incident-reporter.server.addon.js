@@ -29,7 +29,7 @@ function onInstall(e) {
 function onOpen(e) {
   // Add the plugin add-on menu to the user interface.
   SpreadsheetApp.getUi()
-      .createMenu('My Project')
+      .createMenu('Incident Reporter')
       .addItem('Start', 'onShowSidebar')
       .addToUi();
   
@@ -42,5 +42,5 @@ function onOpen(e) {
  * Displays an HTML Service sidebar in Google Sheets.
  */
 function onShowSidebar() {
-  showSidebar('a.my-project.sidebar.view','My Project');
+  showSidebar('a.incident-reporter.sidebar.view','Incident Reporter');
 }
