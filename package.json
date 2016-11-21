@@ -1,5 +1,5 @@
 {
-  "name": "Incident Reporter",
+  "name": "incident-reporter",
   "version": "1.0.0",
   "description": "Creates PDF files from Google Form responses.",
   "main": "gulpfile.js",
