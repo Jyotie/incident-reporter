@@ -83,3 +83,12 @@ function addEmails_onclick() {
     .withSuccessHandler(updateEmailAddresses)
     .addEmailAddresses();
 }
+
+
+/**
+ * Handle the generateReports button click response.
+ */
+function generateReports_onclick() {
+  google.script.run
+    .generateReports();
+}

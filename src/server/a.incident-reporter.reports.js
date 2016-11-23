@@ -14,20 +14,19 @@
 
 
 /**
- * Configuration parameters that are passed into the configuration
- * factory constructor.
- * 
- * @return {myproj.json.Configuration} Default configuration settings.
+ * Generates a PDF file for each form response.
  */
-function getDefaultConfiguration_() {
-  return {
-    debug: false,
-    debugSpreadsheetId: null,
+function generateReports() {
+  var formResponses = new FormResponses();
+  var formResponseSheet = formResponses.sheet;
+  var responses = formResponseSheet.getRange(2, 1, formResponseSheet.getLastRow()-1, 4).getValues();
 
-    sheets: {
-      formResponses: {
-        name: 'Form Responses 1'
-      }
-    },
-  };
+  for (var i = 0; i < responses.length; i++) {
+    var response = responses[i];
+    var incident = new Incident(i+2, response[0], response[1], response[2], response[3]);
+    
+    if (incident.sent !== 'sent') {
+      incident.createReport();      
+    }
+  }
 }

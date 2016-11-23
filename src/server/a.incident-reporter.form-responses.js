@@ -14,20 +14,20 @@
 
 
 /**
- * Configuration parameters that are passed into the configuration
- * factory constructor.
+ * An object representing the form responses sheet.
  * 
- * @return {myproj.json.Configuration} Default configuration settings.
+ * @constructor
  */
-function getDefaultConfiguration_() {
-  return {
-    debug: false,
-    debugSpreadsheetId: null,
+var FormResponses = function() {
+  // Get the sheet name from the configuration object.
+  this.config = Configuration.getCurrent();
+  this.sheetName = this.config.sheets.formResponses.name;
 
-    sheets: {
-      formResponses: {
-        name: 'Form Responses 1'
-      }
-    },
-  };
-}
+  // Get the sheet id.
+  var spreadsheet = new BaseSpreadsheet();
+  var sheetId = spreadsheet.getSheetId(this.sheetName);
+
+  // Inherit from BaseSheet.
+  BaseSheet.call(this, sheetId);
+};
+inherit_(FormResponses, BaseSheet);

@@ -14,20 +14,29 @@
 
 
 /**
- * Configuration parameters that are passed into the configuration
- * factory constructor.
  * 
- * @return {myproj.json.Configuration} Default configuration settings.
  */
-function getDefaultConfiguration_() {
-  return {
-    debug: false,
-    debugSpreadsheetId: null,
+var ReportsFolder = function() {
+  var reportsFolderId = '0B9wrv2nbHrp0Z01kOGROeDVfWk0'; 
 
-    sheets: {
-      formResponses: {
-        name: 'Form Responses 1'
-      }
-    },
-  };
-}
+  // Inherit from BaseFolder.
+  BaseFolder.call(this, reportsFolderId);
+};
+inherit_(ReportsFolder, BaseFolder);
+
+
+/**
+ * Returns the report folder for the current month.
+ *
+ * @return {Folder} A Google Folder object.
+ */
+ReportsFolder.prototype.getCurrentMonthFolder = function() {
+  var currentMonth = getCurrentMonth_();
+  var monthFolders = this.folder.getFoldersByName(currentMonth);
+  
+  if (monthFolders.hasNext()) {
+    return monthFolders.next();
+  } else {
+    return this.folder.createFolder(currentMonth);
+  }
+};
