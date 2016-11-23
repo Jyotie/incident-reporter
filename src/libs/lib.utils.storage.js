@@ -15,12 +15,12 @@
 
 /**
  * An object for assisting with the storage of strings and arrays in the 
- * user properties of a Google Apps Script.
+ * document properties of a Google Apps Script.
  * 
  * @constructor
  */
 var PropertyStore = function() {
-  this.store = PropertiesService.getUserProperties();
+  this.store = PropertiesService.getDocumentProperties();
 };
 
 
