@@ -18,6 +18,12 @@
  */
 function generateReports() {
   var formResponses = new FormResponses();
+
+  var initialized = formResponses.isInitialized();
+  if (initialized === false) {
+    formResponses.initialize();
+  }
+
   var formResponseSheet = formResponses.sheet;
   var responses = formResponseSheet.getRange(2, 1, formResponseSheet.getLastRow()-1, 4).getValues();
 

@@ -17,16 +17,23 @@
  * Configuration parameters that are passed into the configuration
  * factory constructor.
  * 
- * @return {myproj.json.Configuration} Default configuration settings.
+ * @return {Configuration} Default JSON configuration settings object.
  */
 function getDefaultConfiguration_() {
+  var storage = new PropertyStore();
   return {
     debug: false,
     debugSpreadsheetId: null,
 
     sheets: {
       formResponses: {
-        name: 'Form Responses 1'
+        name: 'Form Responses 1',
+        headers: ['Report Status', 'PDF Link'],
+        columns: {
+          reportStatus: storage.getProperty('REPORT_STATUS_COLUMN'),
+          pdfLink: storage.getProperty('PDF_LINK_COLUMN'),
+          max: storage.getProperty('PDF_LINK_COLUMN')
+        }
       }
     },
   };
