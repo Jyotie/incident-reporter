@@ -14,6 +14,51 @@
 
 
 /**
+ * Removes all occurrances of the given element from the array. If the all flag
+ * is set to false, only the first occurrance of the element will be removed.
+ * This method does alter the array.
+ * 
+ * @param {string} element The element to be removed.
+ * @param {boolean} all If true, all matched elements will be removed. If false,
+ *         only the first matched element will be removed. Default is true.
+ */
+Array.prototype.removeElement = function(element, all) {
+  var removeAll = all === undefined ? true : all;
+  var index = this.indexOf(element);
+  if (removeAll === true) {
+    while (index !== -1) {
+      this.splice(index, 1);
+      index = this.indexOf(element);
+    }
+  } else {
+    this.splice(index, 1);
+  }
+};
+
+
+/**
+ * Returns and array with all duplicate elements removed from the origianl
+ * array. This method does not alter the original array.
+ * 
+ * @return {array} An array without any duplicate elements.
+ */
+Array.prototype.removeDuplicates = function() {
+  var seen = {};
+  var out = [];
+  var len = this.length;
+  var j = 0;
+  for(var i = 0; i < len; i++) {
+    var item = this[i];
+    if(seen[item] !== 1) {
+      seen[item] = 1;
+      out[j++] = item;
+    }
+  }
+  return out;
+};
+
+
+/**
  * Returns the given array with all empty, null, and undefined elements removed.
  * 
  * @param {array} array The array to remove empty elements from.
