@@ -29,11 +29,6 @@ function getDefaultConfiguration_() {
       formResponses: {
         name: 'Form Responses 1',
         headers: ['Report Status', 'PDF Link'],
-        columns: {
-          reportStatus: storage.getProperty('REPORT_STATUS_COLUMN'),
-          pdfLink: storage.getProperty('PDF_LINK_COLUMN'),
-          max: storage.getProperty('PDF_LINK_COLUMN')
-        }
       }
     },
   };

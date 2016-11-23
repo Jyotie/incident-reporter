@@ -18,20 +18,23 @@
  */
 function generateReports() {
   var formResponses = new FormResponses();
-
   var initialized = formResponses.isInitialized();
   if (initialized === false) {
     formResponses.initialize();
   }
 
+  var maxCol = formResponses.getMaxColumn();
+
   var formResponseSheet = formResponses.sheet;
-  var responses = formResponseSheet.getRange(2, 1, formResponseSheet.getLastRow()-1, 4).getValues();
+  var responses = formResponseSheet.getRange(2, 1,
+          formResponseSheet.getLastRow() - 1, maxCol).getValues();
 
   for (var i = 0; i < responses.length; i++) {
     var response = responses[i];
-    var incident = new Incident(i+2, response[0], response[1], response[2], response[3]);
+    var row = i + 2;
+    var incident = new Incident(row, response);
     
-    if (incident.sent !== 'sent') {
+    if (incident.isSent() === false) {
       incident.createReport();      
     }
   }

@@ -62,10 +62,9 @@ FormResponses.prototype.initialize = function() {
   var reportStatusColumn = lastColumn + 1;
   var pdfLinkColumn = reportStatusColumn + 1;
 
-  // Add the headers and notes. Resize the columns.
-  this.addHeader(reportStatusColumn, requiredHeaders[0],
-          'REPORT_STATUS_COLUMN');
-  this.addHeader(pdfLinkColumn, requiredHeaders[1], 'PDF_LINK_COLUMN');
+  // Add the headers and notes and resize the columns.
+  this.addHeader(reportStatusColumn, requiredHeaders[0]);
+  this.addHeader(pdfLinkColumn, requiredHeaders[1]);
   this.sheet.setColumnWidth(reportStatusColumn, 100);
   this.sheet.setColumnWidth(pdfLinkColumn, 600);
 };
@@ -95,19 +94,76 @@ FormResponses.prototype.getHeader = function() {
 
 
 /**
- * Adds the header to the given colNum and stores the colNum in the document
- * properties using the storageKey.
+ * Returns an array of header keys for use in JavaScript objects. The keys are
+ * constructed by replacing spaces with an underscore and removing any special
+ * characters from the string.
+ * 
+ * @return {array} An array of header keys.
+ */
+FormResponses.prototype.getHeaderKeys = function() {
+  var headers = this.getHeader();
+
+  var headerKeys = [];
+  for (var i = 0; i < headers.length; i++) {
+    var header = headers[i];
+    var headerKeyNoSpaces = header.replace(/\s+/g, '_');
+    var headerKey = headerKeyNoSpaces.replace(/\W+/g, '');
+    headerKeys.push(headerKey);
+  }
+
+  return headerKeys;
+};
+
+
+/**
+ * Adds the header to the given colNum.
  * 
  * @param {integer} colNum The column number to add to.
  * @param {string} header The header to add.
- * @param {string} storageKey The document properties storage key.
  */
-FormResponses.prototype.addHeader = function(colNum, header, storageKey) {
+FormResponses.prototype.addHeader = function(colNum, header) {
   var headerCell = this.sheet.getRange(1, colNum);
   headerCell.setValue(header);
   headerCell.setNote('This column is required by the ' +
           'incident reporter plugin. Do not remove this column.');
-  var storage = new PropertyStore();
-  storage.setProperty(storageKey, colNum);
-  this.config = Configuration.getCurrent();
+};
+
+
+/**
+ * Returns the number of the last column with content in the header.
+ * 
+ * @return {integer} The last column's position.
+ */
+FormResponses.prototype.getMaxColumn = function() {
+  var header = this.getHeader();
+  var headerLength = header.length;
+  return headerLength;
+};
+
+
+/**
+ * Returns the 'Report Status' column's position.
+ * 
+ * @return {integer} The Report Status column position.
+ */
+FormResponses.prototype.getReportStatusColumn = function() {
+  var header = this.getHeader();
+  var requiredHeaders = this.config.sheets.formResponses.headers;
+  var index = header.indexOf(requiredHeaders[0]);
+  var column = index + 1;
+  return column;
+};
+
+
+/**
+ * Returns the 'PDF Link' column's position.
+ * 
+ * @return {integer} The PDF Link column position.
+ */
+FormResponses.prototype.getPdfLinkColumn = function() {
+  var header = this.getHeader();
+  var requiredHeaders = this.config.sheets.formResponses.headers;
+  var index = header.indexOf(requiredHeaders[1]);
+  var column = index + 1;
+  return column;
 };

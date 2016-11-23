@@ -19,19 +19,52 @@
  * @constructor
  * @param {integer} row The row in the response sheet where
  *     the incident report is located.
- * @param {string} time The time the report was submitted.
- * @param {string} name The name of the reporter.
- * @param {string} description The incident description.
- * @param {string} sent Indicates whether the report was
- *     sent or not.
+ * @param {array} data An array containing the incident data.
  */
-var Incident = function(row, time, name, description, sent) {
+var Incident = function(row, data) {
   this.row = row;
-  this.time = time;
-  this.name = name;
-  this.description = description;
-  this.sent = sent;
   this.pdfUrl = '';
+  this.data = this.initialize(data);
+  this.config = Configuration.getCurrent();
+};
+
+
+/**
+ * Returns an object containing the incident data. Converts header values to 
+ * header keys and stores the incident data with each of the respective keys.
+ * 
+ * @return {object} An object with the incident data stored using the header
+ *     keys.
+ */
+Incident.prototype.initialize = function(data) {
+  var formResponses = new FormResponses();
+  var headerKeys = formResponses.getHeaderKeys();
+
+  var incidentData = {};
+  for (var i = 0; i < headerKeys.length; i++) {
+    var key = headerKeys[i];
+    var value = data[i];
+    incidentData[key] = value;
+  }
+
+  return incidentData;
+};
+
+
+/**
+ * Returns true if the incident report was sent.
+ * 
+ * @return {boolean} True if the incident report was sent, otherwise, false.
+ */
+Incident.prototype.isSent = function() {
+  var reportStatusHeader = this.config.sheets.formResponses.headers[0];
+  var reportStatusKey = reportStatusHeader.replace(/\s+/g, '_');
+  var status = this.data[reportStatusKey];
+  Logger.log('status: ' + status);
+  if (status === 'sent') {
+    return true;
+  }
+  return false;
 };
 
 
@@ -46,45 +79,50 @@ Incident.prototype.createReport = function() {
   var reportFileDocument = DocumentApp.openById(reportFile.fileId);
   var reportFileBody = reportFileDocument.getBody();
   
-  reportFileBody.replaceText('<<name>>', this.name);
-  reportFileBody.replaceText('<<description>>', this.description);
+  // reportFileBody.replaceText('<<name>>', this.name);
+  // reportFileBody.replaceText('<<description>>', this.description);
   
   reportFileDocument.saveAndClose();
 
   var reportsFolder = new ReportsFolder();
   var destination = reportsFolder.getCurrentMonthFolder();
-  var pdfFileName = 'Incident Report for ' + this.name + ' on ' + this.time;
+  // var pdfFileName = 'Incident Report for ' + this.name + ' on ' + this.time;
+  var pdfFileName = 'TEST REPORT';
   var pdfFile = reportFile.createPdf(pdfFileName, destination);
   
   reportFile.file.setTrashed(true);
   
-  this.setUrl(pdfFile.getUrl());
-  this.reportSent();
+  this.setPdfUrl(pdfFile.getUrl());
+  this.setReportStatus();
 };
 
 
 /**
- * Sets the value of the 'Report Sent' box to 'yes' for
+ * Sets the value of the 'Report Status' box to 'sent' for
  * the current incident.
  */
-Incident.prototype.reportSent = function() {
+Incident.prototype.setReportStatus = function() {
   var formResponses = new FormResponses();
   var formResponseSheet = formResponses.sheet;
-  var formResponseSentCell = formResponseSheet.getRange(this.row, 4);
-  formResponseSentCell.setValue('sent');
+  var reportStatusColumn = formResponses.getReportStatusColumn();
+  var formResponseSentCell = formResponseSheet.getRange(this.row,
+          reportStatusColumn);
+  formResponseSentCell.setValue('sent').setHorizontalAlignment('center');
 };
 
 
 /**
- * Sets the value of the 'PDF' box to the PDF file's url.
+ * Sets the value of the 'PDF Link' box to the PDF file's url with hyperlink
+ * for the current incident.
  *
  * @param {string} url The url of the PDF file.
  */
-Incident.prototype.setUrl = function(url) {
+Incident.prototype.setPdfUrl = function(url) {
   this.pdfUrl = url;
   
   var formResponses = new FormResponses();
   var formResponseSheet = formResponses.sheet;
-  var formResponseUrlCell = formResponseSheet.getRange(this.row, 5);
+  var pdfLinkColumn = formResponses.getPdfLinkColumn();
+  var formResponseUrlCell = formResponseSheet.getRange(this.row, pdfLinkColumn);
   formResponseUrlCell.setValue(url);
 };
