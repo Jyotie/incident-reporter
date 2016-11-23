@@ -148,3 +148,10 @@ code {
 .emails li i:hover {
   color: #696969;
 }
+
+.loading {
+  color: #aaa;
+  font-style: italic;
+  margin-left: 10px;
+  display: none;
+}

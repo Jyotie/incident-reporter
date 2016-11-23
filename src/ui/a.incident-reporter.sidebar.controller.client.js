@@ -89,6 +89,16 @@ function addEmails_onclick() {
  * Handle the generateReports button click response.
  */
 function generateReports_onclick() {
+  $('#generate').click(function() {
+    $(this).prop('disabled', true);
+    $('.loading').show();
+  });
   google.script.run
+    .withSuccessHandler(
+      function() {
+        $('#generate').prop('disabled', false);
+        $('.loading').hide();
+      }
+    )
     .generateReports();
 }
