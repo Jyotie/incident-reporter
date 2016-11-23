@@ -181,8 +181,9 @@ function getParentFolder_(file) {
   var parentFolders = file.getParents();
   if (parentFolders.hasNext()) {
     var parentFolder = parentFolders.next();
+    return parentFolder;
   }
-  return parentFolder;
+  return null;
 }
 
 

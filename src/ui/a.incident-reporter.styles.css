@@ -83,3 +83,68 @@ code {
 .btn-bar > input {
   margin: 10px;
 }
+
+
+/**
+ * Card styles
+ */
+.card {
+  padding: 24px 10px;
+  border-top: 1px solid #ddd;
+}
+
+.card:last-of-type {
+  border-bottom: 1px solid #ddd;
+}
+
+.card h4 {
+  margin: 0;
+  margin-bottom: 6px;
+}
+
+.file {
+  padding: 10px;
+  background-color: #eee;
+  margin: 6px 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.file i {
+  margin-right: 4px;
+}
+
+.card .btn-bar > input {
+  margin: 0;
+  margin-top: 6px;
+}
+
+.emails {
+  list-style: none;
+  padding: 0;
+  font-size: 13px;
+}
+
+.emails li {
+  padding: 4px 8px;
+  border-top: 1px solid #eee;
+}
+
+.emails li:last-of-type {
+  border-bottom: 1px solid #eee;
+}
+
+.emails li:hover {
+  background-color: #eee;
+}
+
+.emails li i {
+  color: #aaa;
+  cursor: pointer;
+  float: right;
+  margin-top: 4px;
+}
+
+.emails li i:hover {
+  color: #696969;
+}

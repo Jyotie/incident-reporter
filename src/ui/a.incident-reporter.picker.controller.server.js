@@ -38,136 +38,25 @@ function getOAuthToken() {
  *     representing the selected files.
  * @return {string} A string representing the selected files for user display.
  */
-function loadSelectedFiles(files) {
-  var masteryTracker = new MasteryTracker();
+function loadSelectedFile(files) {
+  var file = files[0];
+  file.mime_type = DriveApp.getFileById(file.id).getMimeType();
 
-  // Filter the incoming files to select only csv files.
-  var validatedFiles = validateFiles(files, 'text/csv');
-
-  for (var i = 0; i < validatedFiles.valid.length; i++) {
-    var file = validatedFiles.valid[i];
-    
-    // Incoming sheet cannot have same name as an existing sheet.
-    // Append a number to the end of the new, duplicate sheet name
-    // to make it unique.
-    if (masteryTracker.hasSheet(file.name)) {
-      file.sheetName = masteryTracker.getUniqueSheetName(file.name);
-      validatedFiles.renamed.push(file);
-    }
-    var sheetId = importCsvFile(file);
+  if (file.mime_type === MimeType.GOOGLE_DOCS) {
+    var storage = new PropertyStore();
+    storage.setProperty('TEMPLATE_FILE_ID', file.id);
+    var success_message = '<div class="msg msg-success">' +
+              'Template file updated' +
+            '</div>' +
+            showCloseButton();
+    // Refresh the sidebar to display the newly-selected file.
+    onShowSidebar();
+    return success_message;
+  } else {
+    var error_message = '<div class="msg msg-error">' +
+              'Only Google Docs files can be used as a template' +
+            '</div>' +
+            showCloseButton();
+    return error_message;
   }
-
-  // Generate the diplay of imported, renamed, and invalid files.
-  importedFiles = displayPickerResults(validatedFiles);
-  return importedFiles;
-}
-
-
-/**
- * Construct an HTML string for display showing the the selected files with
- * links to each file, the invalid files, and the files that were renamed.
- * 
- * @param {object} files An object containing arrays of file objects for valid,
- *     invalid, and renamed files.
- * @return {string} An HTML-formatted string representing the selected files
- *     for user display.
- */
-function displayPickerResults(files) {
-  var display = [];
-
-  // Display valid and imported files.
-  display.push(displayFiles_(
-      files.valid,
-      'The following files were successfully imported:',
-      'msg msg-success',
-      displayFileWithLink_));
-
-  // Display renamed files.
-  display.push(displayFiles_(
-      files.renamed,
-      'The following files were renamed because a sheet with that name ' +
-          'already exists in this spreadsheet:',
-      'msg msg-warning',
-      displayRenamedFile_));
-
-  // Display invalid filename files.
-  display.push(displayFiles_(
-      files.invalidName,
-      'The following files do not have a valid file name and ' +
-          'were not imported:',
-      'msg msg-error',
-      displayFileWithLink_));
-
-  // Display invalid filetype files.
-  display.push(displayFiles_(
-    files.invalidType,
-    'The following files are not valid csv files and were not imported:',
-    'msg msg-error',
-    displayFileWithLink_));
-  
-  // Display close button.
-  display.push('<div class="msg msg-information">' +
-        'You may close this window.' +
-      '</div>' +
-      showCloseButton());
-  
-  return display.join('');
-}
-
-
-/**
- * Returns an HTML-formatted string of files for display.
- * 
- * @private
- * @param {array} files An array of JSON objects returned by Google Picker
- *     representing the selected files.
- * @param {string} message A message to be displayed with the files.
- * @param {string} cssClass A formatting class for the displayed files.
- * @param {function} formatter A function that returns an HTML-formatted
- *     string of an individual file.
- * @returns An HTML-formatted string containing the file display.
- */
-function displayFiles_(files, message, cssClass, formatter) {
-  var output = [];
-  if (files.length > 0) {
-    output.push('<div class="' + cssClass + '">');
-    output.push(message);
-    output.push('<ol>');
-    for (var i = 0; i < files.length; i++) {
-      output.push(formatter(files[i]));
-    }
-    output.push('</ol></div>');
-  }
-  return output.join('');
-}
-
-
-/**
- * Returns an HTML-formatted string of a single file for display.
- * 
- * @private
- * @param {object} file The file object to be displayed.
- * @returns An HTML-formatted string for displaying a linked file name.
- */
-function displayFileWithLink_(file) {
-  return Utilities.formatString(
-    '<li><b>Filename: </b><a href="%s">%s</a></li>',
-    file.url, file.name
-  );
-}
-
-
-/**
- * Returns an HTML-formatted string of a single renamed file for display.
- * 
- * @private
- * @param {object} file The file object to be displayed.
- * @returns An HTML-formatted string for displaying a linked file name with
- *     its new sheet name.
- */
-function displayRenamedFile_(file) {
-  return Utilities.formatString(
-    '<li>File <a href="%s">%s</a> was renamed to %s in the current spreadsheet</li>',
-    file.url, file.name, file.sheetName
-  );
 }

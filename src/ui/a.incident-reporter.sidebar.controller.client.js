@@ -13,7 +13,73 @@
 // limitations under the License.
 
 
-function loadGradebooks_onclick() {
+/**
+ * Sidebar initialization and user-response functions to load the sidebar.
+ */
+$(function() {
+  initializeSidebar();
+
+  $(document).on('click', '.fa-close', function() {
+    $(this).removeClass('fa-close').addClass('fa-spinner fa-spin');
+    var email = $(this).parents('li').data('email');
+    google.script.run
+      .withSuccessHandler(updateEmailAddresses)
+      .removeEmailAddress(email);
+  });
+});
+
+
+/**
+ * Runs sidebar initialization functions to retrieve and display stored data.
+ */
+function initializeSidebar() {
   google.script.run
-      .showPicker();
+    .withSuccessHandler(updateTemplateFile)
+    .getTemplateFileDisplay();
+
+  google.script.run
+    .withSuccessHandler(updateEmailAddresses)
+    .getEmailAddressDisplay();
+}
+
+
+/**
+ * Updates the template file link display on the sidebar.
+ * 
+ * @param {string} link An HTML-formatted string containing the link.
+ */
+function updateTemplateFile(link) {
+  $('#filename').html(link);
+}
+
+
+/**
+ * Updates the email address display on the sidebar.
+ * 
+ * @param {string} emails An HTML-formatted string containing the list of email
+ *         addresses to be displayed.
+ */
+function updateEmailAddresses(emails) {
+  $('#emails').html(emails);
+}
+
+
+/**
+ * Handle the selectFile button click response.
+ */
+function selectFile_onclick() {
+  updateTemplateFile('Loading...');
+  google.script.run
+    .withSuccessHandler(updateTemplateFile)
+    .setTemplateFile();
+}
+
+
+/**
+ * Handle the addEmails button click response.
+ */
+function addEmails_onclick() {
+  google.script.run
+    .withSuccessHandler(updateEmailAddresses)
+    .addEmailAddresses();
 }

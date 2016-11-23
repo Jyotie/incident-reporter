@@ -31,21 +31,13 @@ function createPicker(token) {
   if (pickerApiLoaded && token) {
     var picker = new google.picker.PickerBuilder()
         
-        // Allow user to upload documents to My Drive folder.
-        .addView(new google.picker.DocsUploadView()
-            .setIncludeFolders(true))
-        
-        // Instruct Picker to display *.csv files only.
-        .addView(new google.picker.View(google.picker.ViewId.DOCS)
-            .setQuery('*.csv'))
+        // Instruct Picker to display Documents only.
+        .addView(new google.picker.View(google.picker.ViewId.DOCUMENTS))
 
         // Allow user to select files from Google Drive.
         .addView(new google.picker.DocsView()
             .setIncludeFolders(true)
             .setOwnedByMe(true))
-        
-        // Allow user to choose more than one document in the picker.
-        .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
         
         // Hide title bar since an Apps Script dialog already has a title.
         .hideTitleBar()
@@ -75,19 +67,15 @@ function createPicker(token) {
  * response object. For details on the response object, see
  * https://developers.google.com/picker/docs/results
  *
- * @param {object} data The response object.
+ * @param {object} data The Picker JSON-response object.
  */
 function pickerCallback(data) {
   if (data.action == google.picker.Action.PICKED) {
-    updateDisplay('<em>Importing...</em>');
+    updateDisplay('<em>Selecting...</em>');
     google.script.run
         .withSuccessHandler(updateDisplay)
-        .loadSelectedFiles(data.docs);
+        .loadSelectedFile(data.docs);
   } else if (data.action == google.picker.Action.CANCEL) {
-    var close = '<div class="msg msg-information">' +
-        'Select files canceled. You may close this window.' +
-      '</div>' +
-      closeButton();
-    updateDisplay(close);
+    google.script.host.close();
   }
 }
