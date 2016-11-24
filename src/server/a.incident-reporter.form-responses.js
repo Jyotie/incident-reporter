@@ -106,12 +106,31 @@ FormResponses.prototype.getHeaderKeys = function() {
   var headerKeys = [];
   for (var i = 0; i < headers.length; i++) {
     var header = headers[i];
-    var headerKeyNoSpaces = header.replace(/\s+/g, '_');
-    var headerKey = headerKeyNoSpaces.replace(/\W+/g, '');
+    var headerKey = header.replace(/\s+/g, '_').replace(/\W+/g, '');
     headerKeys.push(headerKey);
   }
 
   return headerKeys;
+};
+
+
+/**
+ * Returns an array of header tags for use in the template file. The tags are
+ * constructed by adding **...** around the header key.
+ * 
+ * @return {array} An array of header tags.
+ */
+FormResponses.prototype.getHeaderTags = function() {
+  var headerKeys = this.getHeaderKeys();
+
+  var headerTags = [];
+  for (var i = 0; i < headerKeys.length; i++) {
+    var headerKey = headerKeys[i];
+    var headerTag = '**' + headerKey + '**';
+    headerTags.push(headerTag);
+  }
+
+  return headerTags;
 };
 
 
