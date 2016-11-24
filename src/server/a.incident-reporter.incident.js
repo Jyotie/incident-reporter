@@ -22,10 +22,13 @@
  * @param {array} data An array containing the incident data.
  */
 var Incident = function(row, data) {
+  this.report = new Reports();
+  this.responses = new FormResponses();
+  this.config = Configuration.getCurrent();
+  
   this.row = row;
   this.pdfUrl = '';
   this.data = this.initialize(data);
-  this.config = Configuration.getCurrent();
 };
 
 
@@ -37,8 +40,7 @@ var Incident = function(row, data) {
  *     keys.
  */
 Incident.prototype.initialize = function(data) {
-  var formResponses = new FormResponses();
-  var headerKeys = formResponses.getHeaderKeys();
+  var headerKeys = this.responses.getHeaderKeys();
 
   var incidentData = {};
   for (var i = 0; i < headerKeys.length; i++) {
@@ -86,8 +88,7 @@ Incident.prototype.createReport = function() {
 
   var reportsFolder = new ReportsFolder();
   var destination = reportsFolder.getCurrentMonthFolder();
-  // var pdfFileName = 'Incident Report for ' + this.name + ' on ' + this.time;
-  var pdfFileName = 'TEST REPORT';
+  var pdfFileName = this.getPdfFilename();
   var pdfFile = reportFile.createPdf(pdfFileName, destination);
   
   reportFile.file.setTrashed(true);
@@ -102,12 +103,35 @@ Incident.prototype.createReport = function() {
  * the current incident.
  */
 Incident.prototype.setReportStatus = function() {
-  var formResponses = new FormResponses();
-  var formResponseSheet = formResponses.sheet;
-  var reportStatusColumn = formResponses.getReportStatusColumn();
-  var formResponseSentCell = formResponseSheet.getRange(this.row,
+  var responseSheet = this.responses.sheet;
+  var reportStatusColumn = this.responses.getReportStatusColumn();
+  var responseSheetSentCell = responseSheet.getRange(this.row,
           reportStatusColumn);
-  formResponseSentCell.setValue('sent').setHorizontalAlignment('center');
+  responseSheetSentCell.setValue('sent').setHorizontalAlignment('center');
+};
+
+
+/**
+ * Returns a string representing the PDF filename of the incident.
+ * 
+ * @return {string} The PDF filename.
+ */
+Incident.prototype.getPdfFilename = function() {
+  var headers = this.responses.getHeaderKeys();
+  var filenameString = this.report.getFilename();
+  var filename = filenameString.split('**');
+
+  var pdfFilename = [];
+  for (var i = 0; i < filename.length; i++) {
+    var name = filename[i];
+    if (headers.indexOf(name) === -1) {
+      pdfFilename.push(name);
+    } else {
+      pdfFilename.push(this.data[name]);
+    }
+  }
+
+  return pdfFilename.join('');
 };
 
 

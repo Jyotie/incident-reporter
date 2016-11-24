@@ -14,11 +14,9 @@
 
 
 /**
- * Base class for Reports.
+ * Empty base class for Reports.
  */
-var Reports = function() {
-  this.reportFilename = '';
-};
+var Reports = function() {};
 
 
 /**
