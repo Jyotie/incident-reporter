@@ -20,7 +20,21 @@
  */
 var EmailAddresses = function() {
   this.storage = new PropertyStore();
-  this.storedEmails = this.storage.getProperty('EMAIL_ADDRESSES', true);
+};
+
+
+/**
+ * Returns and array of stored email addresses or null if no email addresses
+ * were found in storage.
+ * 
+ * @return {array} An array of email addresses, or null.
+ */
+EmailAddresses.prototype.getEmailAddresses = function() {
+  var emails = this.storage.getProperty('EMAIL_ADDRESSES', true);
+  if (emails !== null && emails !== undefined && emails.length > 0) {
+    return emails;
+  }
+  return null;
 };
 
 
@@ -30,20 +44,18 @@ var EmailAddresses = function() {
  * @return {string} An HTML-formatted string of email addresses.
  */
 EmailAddresses.prototype.getDisplay = function() {
-  var emailAddresses = this.storedEmails;
-  
-  var html = [];
-  if (emailAddresses.length > 0) {
+  var emailAddresses = this.getEmailAddresses();
+  if (emailAddresses !== null) {
+    var html = [];
     for (var i = 0; i < emailAddresses.length; i++) {
       html.push(Utilities.formatString('<li data-email="%s">%s' +
           '<span><i class="fa fa-close"></i></span></li>',
           emailAddresses[i], emailAddresses[i]));
     }
+    return html.join('');
   } else {
-    html.push('<li>No email addresses</li>');
+    return '<li>No email addresses</li>';
   }
-  
-  return html.join('');
 };
 
 
@@ -54,13 +66,13 @@ EmailAddresses.prototype.getDisplay = function() {
  * for duplicates within the already-stored email addresses.
  */
 EmailAddresses.prototype.addEmails = function() {
-  var newEmails = showPrompt('Enter a comma-separated list of email addresses');
-  var newEmailAddresses = newEmails.split(/\s*,\s*/);
-  var validEmailAddresses = this.sanitizeEmailAddresses_(newEmailAddresses);
+  var response = showPrompt('Enter a comma-separated list of email addresses');
+  var newEmails = response.split(/\s*,\s*/);
+  var validEmails = this.sanitizeEmailAddresses_(newEmails);
 
-  var emailAddresses = this.storedEmails.concat(validEmailAddresses);
-  this.storage.setProperty('EMAIL_ADDRESSES', emailAddresses, true);
-  this.storedEmails = emailAddresses;
+  var storedEmails = this.getEmailAddresses();
+  var emails = storedEmails !== null ? storedEmails.concat(validEmails) : validEmails;
+  this.storage.setProperty('EMAIL_ADDRESSES', emails, true);
 };
 
 
@@ -70,8 +82,9 @@ EmailAddresses.prototype.addEmails = function() {
  * @param {string} email The email address to remove.
  */
 EmailAddresses.prototype.removeEmail = function(email) {
-  this.storedEmails.removeElement(email, false);
-  this.storage.setProperty('EMAIL_ADDRESSES', this.storedEmails, true);
+  var storedEmails = this.getEmailAddresses();
+  storedEmails.removeElement(email, false);
+  this.storage.setProperty('EMAIL_ADDRESSES', storedEmails, true);
 };
 
 
@@ -89,8 +102,6 @@ EmailAddresses.prototype.sanitizeEmailAddresses_ = function(emails) {
   var validEmailAddresses = this.validateEmails_(uniqueEmailAddresses);
 
   // Remove already-saved email addresses.
-  var storage = new PropertyStore();
-  var storedEmailAddresses = storage.getProperty('EMAIL_ADDRESSES', true);
   var newEmailAddresses = this.removeDuplicateEmails_(validEmailAddresses);
 
   var sanitizedEmailAddresses = newEmailAddresses;
@@ -137,16 +148,19 @@ EmailAddresses.prototype.validateEmail_ = function(email) {
  * @return {array} An array of unique email addresses.
  */
 EmailAddresses.prototype.removeDuplicateEmails_ = function(newEmails) {
-  var origEmails = this.storedEmails;
-  var uniqueEmails = [];
-  for (var i = 0; i < newEmails.length; i++) {
-    var newEmail = newEmails[i];
-    var duplicate = origEmails.indexOf(newEmail);
-    if (duplicate === -1) {
-      uniqueEmails.push(newEmail);
-    } else {
-      showAlert('Duplicate email', newEmail + ' already exists');
+  var origEmails = this.getEmailAddresses();
+  if (origEmails !== null) {
+    var uniqueEmails = [];
+    for (var i = 0; i < newEmails.length; i++) {
+      var newEmail = newEmails[i];
+      var duplicate = origEmails.indexOf(newEmail);
+      if (duplicate === -1) {
+        uniqueEmails.push(newEmail);
+      } else {
+        showAlert('Duplicate email', newEmail + ' already exists');
+      }
     }
+    return uniqueEmails;
   }
-  return uniqueEmails;
+  return newEmails;
 };
