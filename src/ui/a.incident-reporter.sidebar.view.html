@@ -15,6 +15,17 @@
           <img src="https://cdn.rawgit.com/jwmay/incident-reporter/master/img/incident-reporter-logo.jpg">
         </div>
         <div class="card">
+          <h4>Email Addresses</h4>
+          <ul class="comfy-list" id="emails">
+            <li>
+              Loading...
+            </li>
+          </ul>
+          <div class="btn-bar">
+            <input type="button" value="Add emails" onclick="addEmails_onclick();">
+          </div>
+        </div>
+        <div class="card">
           <h4>Template File</h4>
           <div class="file">
             <i class="fa fa-file" aria-hidden="true"></i> <span id="filename">Loading...</span>
@@ -24,14 +35,12 @@
           </div>
         </div>
         <div class="card">
-          <h4>Email Addresses</h4>
-          <ul class="emails" id="emails">
-            <li>
-              Loading...
-            </li>
-          </ul>
+          <h4>Report Name</h4>
+          <div class="file" id="generator">
+            Loading...
+          </div>
           <div class="btn-bar">
-            <input type="button" value="Add emails" onclick="addEmails_onclick();">
+            <input type="button" value="Update" onclick="updateFilename_onclick();">
           </div>
         </div>
         <div class="card">

@@ -14,6 +14,19 @@
 
 
 /**
+ * Returns an HTML-formatted string containing the link to the stored template
+ * file.
+ * 
+ * @returns {string} An HTML-formatted string.
+ */
+function getEmailAddressDisplay() {
+  var emails = new EmailAddresses();
+  var display = emails.getDisplay();
+  return display;
+}
+
+
+/**
  * Returns an HTML-formatted string representing the link to the stored
  * template file.
  * 
@@ -22,10 +35,10 @@
  */
 function getTemplateFileDisplay() {
   var storage = new PropertyStore();
-  var fileid = storage.getProperty('TEMPLATE_FILE_ID');
+  var fileId = storage.getProperty('TEMPLATE_FILE_ID');
 
-  if (fileid !== undefined) {
-    var file = DriveApp.getFileById(fileid);
+  if (fileId !== undefined && fileId !== null && fileId !== '') {
+    var file = DriveApp.getFileById(fileId);
     var name = file.getName();
     var url = file.getUrl();
     var link = Utilities.formatString('<a href="%s" target="_blank">%s</a>',
@@ -38,15 +51,14 @@ function getTemplateFileDisplay() {
 
 
 /**
- * Returns an HTML-formatted string containing the link to the stored template
- * file.
+ * Returns an HTML-formatted string containing the report filename.
  * 
  * @returns {string} An HTML-formatted string.
  */
-function getEmailAddressDisplay() {
-  var emails = new EmailAddresses();
-  var display = emails.getDisplay();
-  return display;
+function getReportFilenameDisplay() {
+  var reports = new Reports();
+  var filename = reports.getFilename();
+  return filename;
 }
 
 
@@ -99,4 +111,17 @@ function setTemplateFile() {
 function showFilePicker() {
   showDialog('a.incident-reporter.file-picker.view', 600, 425,
           'Select a template file');
+}
+
+
+/**
+ * Prompts user for a new report filename, stores the new filename, and
+ * returns the filename as and HTML-formatted string.
+ * 
+ * @return {string} An HTML-formatted string.
+ */
+function setReportFilename() {
+  var reports = new Reports();
+  var filename = reports.updateFilename();
+  return filename;
 }

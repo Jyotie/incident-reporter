@@ -14,9 +14,59 @@
 
 
 /**
+ * Base class for Reports.
+ */
+var Reports = function() {
+  this.reportFilename = '';
+};
+
+
+/**
+ * Returns the report filename.
+ * 
+ * @return {string} The filename or a message to be displayed if no filename
+ *     is stored.
+ */
+Reports.prototype.getFilename = function() {
+  var storage = new PropertyStore();
+  var filename = storage.getProperty('REPORT_FILENAME');
+  if (filename !== null && filename !== undefined && filename !== '') {
+    return filename;
+  }
+  return 'No filename specified';
+};
+
+
+/**
+ * Stores the given filename.
+ * 
+ * @param {string} filename The filename to be stored.
+ */
+Reports.prototype.setFilename = function(filename) {
+  var storage = new PropertyStore();
+  storage.setProperty('REPORT_FILENAME', filename);
+};
+
+
+/**
+ * Prompts the user for a new filename, updates the stored filename, and
+ * returns the new filename.
+ * 
+ * @return {string} The newly-stored filename.
+ */
+Reports.prototype.updateFilename = function() {
+  var filename = showPrompt('Enter a new report filename');
+  if (filename !== '') {
+    this.setFilename(filename);
+  }
+  return this.getFilename();
+};
+
+
+/**
  * Generates a PDF file for each form response.
  */
-function generateReports() {
+Reports.prototype.generateReports = function() {
   var formResponses = new FormResponses();
   var initialized = formResponses.isInitialized();
   if (initialized === false) {
@@ -38,4 +88,13 @@ function generateReports() {
       incident.createReport();      
     }
   }
+};
+
+
+/**
+ * Helper function to generate a PDF file for each form response. 
+ */
+function generateReports() {
+  var reports = new Reports();
+  reports.generateReports();
 }

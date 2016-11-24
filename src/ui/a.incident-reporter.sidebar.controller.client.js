@@ -40,6 +40,10 @@ function initializeSidebar() {
   google.script.run
     .withSuccessHandler(updateEmailAddresses)
     .getEmailAddressDisplay();
+  
+  google.script.run
+    .withSuccessHandler(updateReportFilename)
+    .getReportFilenameDisplay();
 }
 
 
@@ -65,6 +69,27 @@ function updateEmailAddresses(emails) {
 
 
 /**
+ * Updates the filename generator display on the sidebar.
+ * 
+ * @param {string} filename An HTML-formatted string containing the filename
+ *         to be displayed.
+ */
+function updateReportFilename(filename) {
+  $('#generator').html(filename);
+}
+
+
+/**
+ * Handle the addEmails button click response.
+ */
+function addEmails_onclick() {
+  google.script.run
+    .withSuccessHandler(updateEmailAddresses)
+    .addEmailAddresses();
+}
+
+
+/**
  * Handle the selectFile button click response.
  */
 function selectFile_onclick() {
@@ -76,12 +101,12 @@ function selectFile_onclick() {
 
 
 /**
- * Handle the addEmails button click response.
+ * Handle the updateFilename button click response.
  */
-function addEmails_onclick() {
+function updateFilename_onclick() {
   google.script.run
-    .withSuccessHandler(updateEmailAddresses)
-    .addEmailAddresses();
+    .withSuccessHandler(updateReportFilename)
+    .setReportFilename();
 }
 
 
