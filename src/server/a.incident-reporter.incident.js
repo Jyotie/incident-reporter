@@ -60,7 +60,7 @@ Incident.prototype.isSent = function() {
   var reportStatusHeader = this.config.sheets.formResponses.headers[0];
   var reportStatusKey = reportStatusHeader.replace(/\s+/g, '_');
   var status = this.data[reportStatusKey];
-  Logger.log('status: ' + status);
+
   if (status === 'sent') {
     return true;
   }

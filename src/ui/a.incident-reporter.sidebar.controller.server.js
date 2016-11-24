@@ -87,7 +87,7 @@ function removeEmailAddress(email) {
  * @returns {string} An HTML-formatted string.
  */
 function setTemplateFile() {
-  showPicker();
+  showFilePicker();
   return getTemplateFileDisplay();
 }
 
@@ -96,7 +96,7 @@ function setTemplateFile() {
  * Displays an HTML Service dialog in Google Sheets that contains client-side
  * JavaScript code for the Google Picker API.
  */
-function showPicker() {
-  showDialog('a.incident-reporter.picker.view', 600, 425,
+function showFilePicker() {
+  showDialog('a.incident-reporter.file-picker.view', 600, 425,
           'Select a template file');
 }
