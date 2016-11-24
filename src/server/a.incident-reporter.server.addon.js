@@ -27,14 +27,20 @@ function onInstall(e) {
  * @param {object} e Apps Script onInstall event object
  */
 function onOpen(e) {
-  // Add the plugin add-on menu to the user interface.
-  SpreadsheetApp.getUi()
-      .createMenu('Incident Reporter')
-      .addItem('Start', 'onShowSidebar')
-      .addToUi();
+  var config = Configuration.getCurrent();
   
-  // Show the sidebar when the spreadsheet opens.
-  onShowSidebar();
+  // Add the plugin add-on menu to the user interface with additional menues
+  // available only in debug mode.
+  var ui = SpreadsheetApp.getUi()
+      .createMenu('Incident Reporter')
+      .addItem('Start', 'onShowSidebar'); 
+  
+  if (config.debug) {
+    ui.addSeparator()
+        .addItem('Clear Document Properties', 'onClearDocumentProperties');
+  }
+  
+  ui.addToUi();
 }
 
 
@@ -43,4 +49,15 @@ function onOpen(e) {
  */
 function onShowSidebar() {
   showSidebar('a.incident-reporter.sidebar.view','Incident Reporter');
+}
+
+
+/**
+ * Clears the document properties storage and refreshes the sidebar. this
+ * function is only available in debug mode.
+ */
+function onClearDocumentProperties() {
+  var storage = new PropertyStore();
+  storage.clean();
+  onShowSidebar();
 }
