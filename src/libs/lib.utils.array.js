@@ -85,7 +85,7 @@ Array.prototype.toLowerCase = function() {
     }
   );
   return lowerCaseArray;
-}
+};
 
 
 /**
