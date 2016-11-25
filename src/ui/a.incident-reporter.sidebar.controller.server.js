@@ -85,6 +85,18 @@ function getReportsFolderDisplay() {
 
 
 /**
+ * Returns the currently stored trigger as 'automatic' or 'manual'.
+ * 
+ * @returns {string} The currently stored trigger.
+ */
+function getGenerateTriggerDisplay() {
+  var triggers = new Triggers();
+  var trigger = triggers.trigger;
+  return trigger;
+}
+
+
+/**
  * Prompts user for a comma-separated list of email addresses. Validates and
  * stores the email addresses. Returns an HTML-formatted string containing a
  * list of the stored email addresses. 
@@ -183,4 +195,19 @@ function setReportFilename() {
   var reports = new Reports();
   var filename = reports.updateFilename();
   return filename;
+}
+
+
+/**
+ * Stores and activates the user-selected trigger. Returns the selected trigger
+ * as 'automatic' or 'manual'.
+ * 
+ * @param {string} trigger The trigger to activate.
+ * @return {string} The activated trigger.
+ */
+function setGenerateTrigger(trigger) {
+  var triggers = new Triggers();
+  triggers.setTrigger(trigger);
+  triggers.activateCurrentTrigger();
+  return trigger;
 }

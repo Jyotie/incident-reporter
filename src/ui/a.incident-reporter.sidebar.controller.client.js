@@ -19,12 +19,29 @@
 $(function() {
   initializeSidebar();
 
+  // Handle the 'x' click response on email addresses.
   $(document).on('click', '.fa-close', function() {
     $(this).removeClass('fa-close').addClass('fa-spinner fa-spin');
     var email = $(this).parents('li').data('email');
     google.script.run
       .withSuccessHandler(updateEmailAddresses)
       .removeEmailAddress(email);
+  });
+
+  // Handle the trigger change for generate reports.
+  $('#trigger input').on('change', function() {
+    var $option = $(this);
+    var trigger = $option.val();
+    $option.siblings('.saving').show();
+    google.script.run
+      .withSuccessHandler(
+        function(trigger) {
+          updateGenerateTrigger(trigger);
+          $option.siblings('.saving').hide();
+          $option.siblings('.saved').show().fadeOut(2000);
+        }
+      )
+      .setGenerateTrigger(trigger);
   });
 });
 
@@ -48,6 +65,10 @@ function initializeSidebar() {
   google.script.run
     .withSuccessHandler(updateReportFilename)
     .getReportFilenameDisplay();
+
+  google.script.run
+    .withSuccessHandler(updateGenerateTrigger)
+    .getGenerateTriggerDisplay();
 }
 
 
@@ -90,6 +111,21 @@ function updateReportsFolder(link) {
  */
 function updateReportFilename(filename) {
   $('#generator').html(filename);
+}
+
+
+/**
+ * 
+ */
+function updateGenerateTrigger(trigger) {
+  if (trigger === 'automatic') {
+    $('#triggerAuto').prop('checked', true);
+    $('#generate').hide();
+  }
+  if (trigger === 'manual') {
+    $('#triggerMan').prop('checked', true);
+    $('#generate').show();
+  }
 }
 
 
@@ -150,14 +186,13 @@ function updateFilename_onclick() {
  * Handle the generateReports button click response.
  */
 function generateReports_onclick() {
-  $('#generate').click(function() {
-    $(this).prop('disabled', true);
-    $('.loading').show();
-  });
+  var $button = $('#generate');
+  $button.prop('disabled', true);
+  $('.loading').show();
   google.script.run
     .withSuccessHandler(
       function() {
-        $('#generate').prop('disabled', false);
+        $button.prop('disabled', false);
         $('.loading').hide();
       }
     )

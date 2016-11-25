@@ -160,3 +160,21 @@ code {
   margin-left: 10px;
   display: none;
 }
+
+.saving {
+  color: #aaa;
+  font-style: italic;
+  font-size: 12px;
+  margin-left: 6px;
+  line-height: 14px;
+  display: none;
+}
+
+.saved {
+  color: green;
+  font-style: italic;
+  font-size: 12px;
+  margin-left: 6px;
+  line-height: 14px;
+  display: none;
+}
