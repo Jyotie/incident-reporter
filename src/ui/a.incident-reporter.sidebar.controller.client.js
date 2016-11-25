@@ -34,16 +34,31 @@ $(function() {
  */
 function initializeSidebar() {
   google.script.run
-    .withSuccessHandler(updateTemplateFile)
-    .getTemplateFileDisplay();
-
-  google.script.run
     .withSuccessHandler(updateEmailAddresses)
     .getEmailAddressDisplay();
   
   google.script.run
+    .withSuccessHandler(updateTemplateFile)
+    .getTemplateFileDisplay();
+
+  google.script.run
+    .withSuccessHandler(updateReportsFolder)
+    .getReportsFolderDisplay();
+
+  google.script.run
     .withSuccessHandler(updateReportFilename)
     .getReportFilenameDisplay();
+}
+
+
+/**
+ * Updates the email address display on the sidebar.
+ * 
+ * @param {string} emails An HTML-formatted string containing the list of email
+ *         addresses to be displayed.
+ */
+function updateEmailAddresses(emails) {
+  $('#emails').html(emails);
 }
 
 
@@ -58,13 +73,12 @@ function updateTemplateFile(link) {
 
 
 /**
- * Updates the email address display on the sidebar.
+ * Updates the template file link display on the sidebar.
  * 
- * @param {string} emails An HTML-formatted string containing the list of email
- *         addresses to be displayed.
+ * @param {string} link An HTML-formatted string containing the link.
  */
-function updateEmailAddresses(emails) {
-  $('#emails').html(emails);
+function updateReportsFolder(link) {
+  $('#foldername').html(link);
 }
 
 
@@ -97,6 +111,17 @@ function selectFile_onclick() {
   google.script.run
     .withSuccessHandler(updateTemplateFile)
     .setTemplateFile();
+}
+
+
+/**
+ * Handle the selectFolder button click response.
+ */
+function selectFolder_onclick() {
+  updateReportsFolder('Loading...');
+  google.script.run
+    .withSuccessHandler(updateReportsFolder)
+    .setReportsFolder();
 }
 
 

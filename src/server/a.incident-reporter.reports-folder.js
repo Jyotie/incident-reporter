@@ -14,15 +14,51 @@
 
 
 /**
- * 
+ * Base class for the Reports storage folder.
  */
 var ReportsFolder = function() {
-  var reportsFolderId = '0B9wrv2nbHrp0Z01kOGROeDVfWk0'; 
+  this.folderId = this.getFolderId();
+  this.folder = this.getFolder();
 
   // Inherit from BaseFolder.
-  BaseFolder.call(this, reportsFolderId);
+  BaseFolder.call(this, this.folderId);
 };
 inherit_(ReportsFolder, BaseFolder);
+
+
+/**
+ * Returns the folder id if one is stored, otherwise, returns null.
+ * 
+ * @return {string} The folder id.
+ */
+ReportsFolder.prototype.getFolderId = function() {
+  var storage = new PropertyStore();
+  var folderId = storage.getProperty('REPORTS_FOLDER_ID');
+  if (folderId !== undefined && folderId !== null && folderId !== '') {
+    return folderId;
+  }
+  return null;
+};
+
+
+/**
+ * Stores the reports folder id in document properties.
+ */
+ReportsFolder.prototype.setFolderId = function(folderId) {
+  var storage = new PropertyStore();
+  storage.setProperty('REPORTS_FOLDER_ID', folderId);
+};
+
+
+/**
+ * Returns the reports folder as a Google Folder object.
+ * 
+ * @return {Folder} A Google Folder object.
+ */
+ReportsFolder.prototype.getFolder = function() {
+  var folder = this.getFolderById(this.folderId);
+  return folder;
+};
 
 
 /**

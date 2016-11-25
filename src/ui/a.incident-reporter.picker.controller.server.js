@@ -30,21 +30,21 @@ function getOAuthToken() {
 
 
 /**
- * Create a new sheet for each selected CSV file containing the imported data.
- * Also performs validation that selected files have the correct mime-type and
- * will not conflict with existing sheet names.
+ * Process the selected file from the Google Picker API. Perform mime-type
+ * validation and return a display message based on the validation of the
+ * selected file.
  * 
- * @param {array} docs An array of JSON objects returned by Google Picker
- *     representing the selected files.
- * @return {string} A string representing the selected files for user display.
+ * @param {array} files An array of JSON objects returned by Google Picker
+ *     representing the selected file.
+ * @return {string} An HTML-formatted string containing the results message.
  */
 function loadSelectedFile(files) {
   var file = files[0];
   file.mime_type = DriveApp.getFileById(file.id).getMimeType();
 
   if (file.mime_type === MimeType.GOOGLE_DOCS) {
-    var storage = new PropertyStore();
-    storage.setProperty('TEMPLATE_FILE_ID', file.id);
+    var templateFile = new TemplateFile();
+    templateFile.setFileId(file.id);
     var success_message = '<div class="msg msg-success">' +
               'Template file updated' +
             '</div>' +
@@ -57,6 +57,36 @@ function loadSelectedFile(files) {
               'Only Google Docs files can be used as a template' +
             '</div>' +
             showCloseButton();
+    return error_message;
+  }
+}
+
+
+/**
+ * Process the selected folder from the Google Picker API.
+ * 
+ * @param {array} folders An array of JSON objects returned by Google Picker
+ *     representing the selected folder.
+ * @return {string} An HTML-formatted string containing the results message.
+ */
+function loadSelectedFolder(folders) {
+  var folder = folders[0];
+
+  if (folder.type === 'folder') {
+    var reportsFolder = new ReportsFolder();
+    reportsFolder.setFolderId(folder.id);
+    var success_message = '<div class="msg msg-success">' +
+              'Reports folder updated' +
+            '</div>' +
+            showCloseButton();
+    // Refresh the sidebar to display the newly-selected folder.
+    onShowSidebar();
+    return success_message;
+  } else {
+    var error_message = '<div class="msg msg-error">' +
+          'Only a folder can be selected to store reports' +
+        '</div>' +
+        showCloseButton();
     return error_message;
   }
 }

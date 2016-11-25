@@ -19,14 +19,36 @@
  * @constructor
  */
 var TemplateFile = function() {
-  // Get the stored template file id.
-  var storage = new PropertyStore();
-  var templateFileId = storage.getProperty('TEMPLATE_FILE_ID');
+  this.fileId = this.getFileId();
 
   // Inherit from BaseFile.
-  BaseFile.call(this, templateFileId);
+  BaseFile.call(this, this.fileId);
 };
 inherit_(TemplateFile, BaseFile);
+
+
+/**
+ * Returns the folder id if one is stored, otherwise, returns null.
+ * 
+ * @return {string} The file id.
+ */
+TemplateFile.prototype.getFileId = function() {
+  var storage = new PropertyStore();
+  var fileId = storage.getProperty('TEMPLATE_FILE_ID');
+  if (fileId !== undefined && fileId !== null && fileId !== '') {
+    return fileId;
+  }
+  return null;
+};
+
+
+/**
+ * Stores the template file id in document properties.
+ */
+TemplateFile.prototype.setFileId = function(fileId) {
+  var stored = new PropertyStore();
+  storage.setProperty('TEMPLATE_FILE_ID', file);
+};
 
 
 /**

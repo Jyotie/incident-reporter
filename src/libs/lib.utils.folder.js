@@ -22,7 +22,7 @@
  */
 var BaseFolder = function(id) {
   this.rootFolder = this.getRootFolder();
-  if (id !== undefined) {
+  if (id !== undefined && id !== null && id !== '') {
     this.folder = this.getFolderById(id);
   } else {
     this.folder = this.rootFolder;
@@ -42,14 +42,18 @@ BaseFolder.prototype.getRootFolder = function() {
 
 
 /**
- * Returns the folder with the given id.
+ * Returns the folder with the given id, or null if folder not found.
  * 
  * @param {string} id The id of the folder.
  * @return {Folder} A Google Folder object.
  */
 BaseFolder.prototype.getFolderById = function(id) {
-  var folder = DriveApp.getFolderById(id);
-  return folder;
+  try {
+    var folder = DriveApp.getFolderById(id);
+    return folder;
+  } catch(e) {
+    return null;
+  }
 };
 
 
@@ -70,4 +74,26 @@ BaseFolder.prototype.getFolderByPath = function(path) {
     }
   }
   return currentFolder;
+};
+
+
+/**
+ * Returns the name of the folder.
+ * 
+ * @return {string} The name of the folder.
+ */
+BaseFolder.prototype.getName = function() {
+  var name = this.folder.getName();
+  return name;
+};
+
+
+/**
+ * Returns the url of the folder.
+ * 
+ * @return {string} The url of the folder.
+ */
+BaseFolder.prototype.getUrl = function() {
+  var url = this.folder.getUrl();
+  return url;
 };

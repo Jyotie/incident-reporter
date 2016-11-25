@@ -38,8 +38,8 @@ function getTemplateFileDisplay() {
   var file = templateFile.getFile();
 
   if (file !== null) {
-    var name = file.getName();
-    var url = file.getUrl();
+    var name = templateFile.getName();
+    var url = templateFile.getUrl();
     var link = Utilities.formatString('<a href="%s" target="_blank">%s</a>',
             url, name);
     return link;
@@ -61,6 +61,26 @@ function getReportFilenameDisplay() {
     return 'No file selected';
   }
   return filename;
+}
+
+
+/**
+ * Returns an HTML-formatted string containing the reports folder.
+ * 
+ * @returns {string} An HTML-formatted string.
+ */
+function getReportsFolderDisplay() {
+  var reportsFolder = new ReportsFolder();
+
+  if (reportsFolder.folder !== null) {
+    var name = reportsFolder.getName();
+    var url = reportsFolder.getUrl();
+    var link = Utilities.formatString('<a href="%s" target="_blank">%s</a>',
+            url, name);
+    return link;
+  } else {
+    return 'No folder selected';
+  }
 }
 
 
@@ -96,7 +116,7 @@ function removeEmailAddress(email) {
 
 /**
  * Displays the file selector and returns an HTML-formatted string containing
- * the link to the currently stored template file.
+ * the link to the currently selected template file.
  * 
  * @returns {string} An HTML-formatted string.
  */
@@ -107,12 +127,36 @@ function setTemplateFile() {
 
 
 /**
+ * Displays the folder selector and returns an HTML-formatted string containing
+ * the link to the currently selected reports folder.
+ * 
+ * @returns {string} An HTML-formatted string.
+ */
+function setReportsFolder() {
+  showFolderPicker();
+  return getReportsFolderDisplay();
+}
+
+
+/**
  * Displays an HTML Service dialog in Google Sheets that contains client-side
- * JavaScript code for the Google Picker API.
+ * JavaScript code for the Google Picker API. Used to select the report
+ * template file.
  */
 function showFilePicker() {
   showDialog('a.incident-reporter.file-picker.view', 600, 425,
           'Select a template file');
+}
+
+
+/**
+ * Displays an HTML Service dialog in Google Sheets that contains client-side
+ * JavaScript code for the Google Picker API. Used to select the reports
+ * storage folder.
+ */
+function showFolderPicker() {
+  showDialog('a.incident-reporter.folder-picker.view', 600, 425,
+          'Select a folder to store generated reports');
 }
 
 
