@@ -28,6 +28,7 @@ var Incident = function(row, data) {
   
   this.row = row;
   this.pdfUrl = '';
+  this.pdfFile = {};
   this.data = this.getData(data);
 };
 
@@ -101,7 +102,9 @@ Incident.prototype.createReport = function() {
   reportFile.file.setTrashed(true);
   
   this.setPdfUrl(pdfFile.getUrl());
+  this.pdfFile = pdfFile;
   this.setReportStatus();
+  this.emailReport();
 };
 
 
@@ -156,4 +159,54 @@ Incident.prototype.setPdfUrl = function(url) {
   var pdfLinkColumn = formResponses.getPdfLinkColumn();
   var formResponseUrlCell = formResponseSheet.getRange(this.row, pdfLinkColumn);
   formResponseUrlCell.setValue(url);
+};
+
+
+/**
+ * Sends an email of the report to all email addresses stored in
+ * document properties.
+ */
+Incident.prototype.emailReport = function() {
+  var emailAddresses = new EmailAddresses();
+  var emails = emailAddresses.getEmailAddresses();
+
+  if (emails !== null) {
+    for (var i = 0; i < emails.length; i++) {
+      var recipient = emails[i];
+      var subject = this.getPdfFilename();
+      var body = this.getEmailBody();
+      var options = {
+        attachments: [this.pdfFile.getAs(MimeType.PDF)],
+        htmlBody: body,
+        name: 'Dean\'s Office Incident Reporter'
+      };
+      GmailApp.sendEmail(recipient, subject, body, options);
+    }
+  }
+};
+
+
+/**
+ * Returns and HTML-formatted string containing the body content of the email.
+ * 
+ * @return {string} An HTML-formatted string.
+ */
+Incident.prototype.getEmailBody = function() {
+  var message = [];
+
+  message.push('<h2 style="color:green;font-family:helvetica,arial,sans-serif;font-weight:400;">' +
+                 'Dean\'s Office Incident Report' +
+               '</h2>');
+  message.push('<p style="font-size:16px;font-weight:200;font-family:helvetica,arial,sans-serif;">' +
+                 'Please find the attached incident report titled ' +
+                 '<em>' + this.getPdfFilename() + '</em>. ' +
+               '</p>');
+  message.push('<p style="color:#a5a5a5;font-family:helvetica,arial,sans-serif;"><small><em>' +
+                 'You are receiving this email because your email address was added to ' +
+                 'the Mojave High School Dean\'s Office Incident Reporter. Please email ' +
+                 '<a href="mailto:mayj3@nv.ccsd.net">mayj3@nv.ccsd.net</a> if you have ' +
+                 'any questions or no longer wish to receive these emails.' +
+               '</em></small></p>');
+
+  return message.join('');
 };
