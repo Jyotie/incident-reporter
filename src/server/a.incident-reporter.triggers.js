@@ -55,11 +55,13 @@ Triggers.prototype.setTrigger = function(trigger) {
  * @return {string} The current trigger.
  */
 Triggers.prototype.activateCurrentTrigger = function() {
+  var trigger = this.getTrigger();
   var scriptTriggers = ScriptApp.getProjectTriggers();
   
-  if (this.trigger === 'automatic') {
+  if (trigger === 'automatic') {
     this.enableFormResponseTrigger();
-  } else {
+  }
+  if (trigger === 'manual') {
     this.disableTrigger('generateReports');
   }
   return this.trigger;
@@ -77,7 +79,7 @@ Triggers.prototype.enableFormResponseTrigger = function() {
       .create();
   } catch(e) {
     showAlert('Installable trigger error', '[enableFormResponseTrigger] ' +
-            'Installable triggers cannot be tested: ' + e);
+            'Installable triggers cannot be tested.\n' + e);
   }
 };
 
@@ -99,6 +101,6 @@ Triggers.prototype.disableTrigger = function(triggerFunctionName) {
     }
   } catch(e) {
     showAlert('Installable trigger error', '[deleteTrigger] Installable ' +
-            'triggers cannot be tested: ' + e);
+            'triggers cannot be tested.\n' + e);
   }
 };
