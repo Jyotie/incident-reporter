@@ -115,6 +115,17 @@ function selectFile_onclick() {
 
 
 /**
+ * Handle the generateFile button click response.
+ */
+function generateFile_onclick() {
+  updateTemplateFile('Loading...');
+  google.script.run
+    .withSuccessHandler(updateTemplateFile)
+    .generateTemplateFile();
+}
+
+
+/**
  * Handle the selectFolder button click response.
  */
 function selectFolder_onclick() {

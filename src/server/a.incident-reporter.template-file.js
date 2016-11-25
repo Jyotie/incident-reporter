@@ -64,3 +64,36 @@ TemplateFile.prototype.copyTemplateFile = function() {
   var copiedTemplateFile = this.copyFile(name, destination);
   return copiedTemplateFile;
 };
+
+
+/**
+ * Creates a report template file with all of the header keys.
+ */
+TemplateFile.prototype.generateFile = function() {
+  var reportsFolder = new ReportsFolder();
+  var destination = reportsFolder.folder;
+
+  var filename = 'Incident Reporter Template File';
+  var file = DocumentApp.create(filename);
+
+  var body = file.getBody();
+
+  var formResponses = new FormResponses();
+  var headerKeys = formResponses.getHeaderKeys();
+  headerKeys.splice(headerKeys.length - 2, 2);
+
+  body.appendParagraph('The following tags are placeholders for information ' +
+          'from the form responses. You can arrange them and format them ' +
+          'however you would like. You can even remove them. When the report ' +
+          'is generated, they will be replaced by the actual form response.\n');
+  for (var i = 0; i < headerKeys.length; i++) {
+    var headerKey = '<<' + headerKeys[i] + '>>';
+    body.appendParagraph(headerKey);
+  }
+
+  this.setFileId(file.getId());
+
+  // Move the file to the reports folder.
+  var templateFile = new BaseFile(file.getId());
+  templateFile.moveTo(destination);
+};

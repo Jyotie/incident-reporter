@@ -127,6 +127,19 @@ function setTemplateFile() {
 
 
 /**
+ * Generates a basic report template file and returns an HTML-formatted string
+ * containing a link to the file.
+ * 
+ * @returns {string} An HTML-formatted string.
+ */
+function generateTemplateFile() {
+  var templateFile = new TemplateFile();
+  templateFile.generateFile();
+  return getTemplateFileDisplay();
+}
+
+
+/**
  * Displays the folder selector and returns an HTML-formatted string containing
  * the link to the currently selected reports folder.
  * 
