@@ -46,8 +46,8 @@ TemplateFile.prototype.getFileId = function() {
  * Stores the template file id in document properties.
  */
 TemplateFile.prototype.setFileId = function(fileId) {
-  var stored = new PropertyStore();
-  storage.setProperty('TEMPLATE_FILE_ID', file);
+  var storage = new PropertyStore();
+  storage.setProperty('TEMPLATE_FILE_ID', fileId);
 };
 
 
