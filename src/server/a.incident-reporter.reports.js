@@ -22,8 +22,7 @@ var Reports = function() {};
 /**
  * Returns the report filename.
  * 
- * @return {string} The filename or a message to be displayed if no filename
- *     is stored.
+ * @return {string} The filename or null if no filename is stored.
  */
 Reports.prototype.getFilename = function() {
   var storage = new PropertyStore();
@@ -31,7 +30,7 @@ Reports.prototype.getFilename = function() {
   if (filename !== null && filename !== undefined && filename !== '') {
     return filename;
   }
-  return 'No filename specified';
+  return null;
 };
 
 
@@ -67,23 +66,22 @@ Reports.prototype.updateFilename = function() {
 Reports.prototype.generateReports = function() {
   var formResponses = new FormResponses();
   var initialized = formResponses.isInitialized();
-  if (initialized === false) {
-    formResponses.initialize();
-  }
+  
+  if (initialized === true) {
+    var maxCol = formResponses.getMaxColumn();
 
-  var maxCol = formResponses.getMaxColumn();
+    var formResponseSheet = formResponses.sheet;
+    var responses = formResponseSheet.getRange(2, 1,
+            formResponseSheet.getLastRow() - 1, maxCol).getValues();
 
-  var formResponseSheet = formResponses.sheet;
-  var responses = formResponseSheet.getRange(2, 1,
-          formResponseSheet.getLastRow() - 1, maxCol).getValues();
-
-  for (var i = 0; i < responses.length; i++) {
-    var response = responses[i];
-    var row = i + 2;
-    var incident = new Incident(row, response);
-    
-    if (incident.isSent() === false) {
-      incident.createReport();      
+    for (var i = 0; i < responses.length; i++) {
+      var response = responses[i];
+      var row = i + 2;
+      var incident = new Incident(row, response);
+      
+      if (incident.isSent() === false) {
+        incident.createReport();      
+      }
     }
   }
 };

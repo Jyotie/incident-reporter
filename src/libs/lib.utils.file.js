@@ -23,28 +23,51 @@ var BaseFile = function(fileId) {
   this.fileId = fileId;
   this.file = this.getFile();
   this.name = this.getName();
+  this.url = this.getUrl();
 };
 
 
 /**
- * Returns a Google Drive File object with the given file id.
+ * Returns a Google Drive File object with the given file id. If the file cannot
+ * be found or you do not have permission to access the file, returns null.
  * 
  * @return {File} A Google File object.
  */
 BaseFile.prototype.getFile = function() {
-  var file = DriveApp.getFileById(this.fileId);
-  return file; 
+  try {
+    var file = DriveApp.getFileById(this.fileId);
+    return file; 
+  } catch(e) {
+    return null;
+  }
 };
 
 
 /**
- * Returns the name of the file.
+ * Returns the name of the file, or null if there is no file.
  * 
  * @return {string} The name of the file.
  */
 BaseFile.prototype.getName = function() {
-  var name = this.file.getName();
-  return name;
+  if (this.file !== null) {
+    var name = this.file.getName();
+    return name;
+  }
+  return null;
+};
+
+
+/**
+ * Returns the url of the file, or null if there is no file.
+ * 
+ * @return {string} The url of the file.
+ */
+BaseFile.prototype.getUrl = function() {
+  if (this.file !== null) {
+    var url = this.file.getUrl();
+    return url;
+  }
+  return null;
 };
 
 

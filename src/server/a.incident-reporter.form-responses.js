@@ -40,12 +40,33 @@ inherit_(FormResponses, BaseSheet);
  * @return {boolean} True if the sheet is initialized, otherwise, false.
  */
 FormResponses.prototype.isInitialized = function() {
+  // Ensure the required headers are set.
   var header = this.getHeader();
   var requiredHeaders = this.config.sheets.formResponses.headers;
   var lastColumn = this.sheet.getLastColumn();
   var headerSlice = header.slice(lastColumn - 2, lastColumn);
-  var initialized = arraysEqual(requiredHeaders, headerSlice);
-  return initialized;
+  var headersSet = arraysEqual(requiredHeaders, headerSlice);
+  if (headersSet !== true) {
+    this.initialize();
+  }
+
+  // Ensure a template file has been selected.
+  var templateFile = new TemplateFile();
+  var file = templateFile.getFile();
+  if (file === null) {
+    showAlert('Template File', 'Please select a template file');
+    return false;
+  }
+
+  // Ensure a report filename has been specified.
+  var reports = new Reports();
+  var filename = reports.getFilename();
+  if (filename === null) {
+    showAlert('Report Name', 'Please provide a report name');
+    return false;
+  }
+
+  return true;
 };
 
 

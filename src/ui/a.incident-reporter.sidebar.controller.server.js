@@ -34,11 +34,10 @@ function getEmailAddressDisplay() {
  *         stored template file.
  */
 function getTemplateFileDisplay() {
-  var storage = new PropertyStore();
-  var fileId = storage.getProperty('TEMPLATE_FILE_ID');
+  var templateFile = new TemplateFile();
+  var file = templateFile.getFile();
 
-  if (fileId !== undefined && fileId !== null && fileId !== '') {
-    var file = DriveApp.getFileById(fileId);
+  if (file !== null) {
     var name = file.getName();
     var url = file.getUrl();
     var link = Utilities.formatString('<a href="%s" target="_blank">%s</a>',
@@ -58,6 +57,9 @@ function getTemplateFileDisplay() {
 function getReportFilenameDisplay() {
   var reports = new Reports();
   var filename = reports.getFilename();
+  if (filename === null) {
+    return 'No file selected';
+  }
   return filename;
 }
 
