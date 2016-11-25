@@ -28,18 +28,19 @@ var Incident = function(row, data) {
   
   this.row = row;
   this.pdfUrl = '';
-  this.data = this.initialize(data);
+  this.data = this.getData(data);
 };
 
 
 /**
  * Returns an object containing the incident data. Converts header values to 
- * header keys and stores the incident data with each of the respective keys.
+ * header tags and stores the incident data with each of the respective keys.
  * 
- * @return {object} An object with the incident data stored using the header
- *     keys.
+ * @param {array} data An array containing the incident data.
+ * @return {object} An object with the incident data stored using the
+ *     header tags.
  */
-Incident.prototype.initialize = function(data) {
+Incident.prototype.getData = function(data) {
   var headerKeys = this.responses.getHeaderKeys();
 
   var incidentData = {};
@@ -81,9 +82,15 @@ Incident.prototype.createReport = function() {
   var reportFileDocument = DocumentApp.openById(reportFile.fileId);
   var reportFileBody = reportFileDocument.getBody();
   
-  // reportFileBody.replaceText('<<name>>', this.name);
-  // reportFileBody.replaceText('<<description>>', this.description);
-  
+  // Replace all occurances of the header tag with the incident data value.
+  for (var header in this.data) {
+    if (this.data.hasOwnProperty(header)) {
+      var headerTag = '<<' + header + '>>';
+      var headerValue = this.data[header];
+      reportFileBody.replaceText(headerTag, headerValue);
+    }
+  }
+
   reportFileDocument.saveAndClose();
 
   var reportsFolder = new ReportsFolder();
