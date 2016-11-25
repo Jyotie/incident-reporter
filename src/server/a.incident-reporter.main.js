@@ -22,7 +22,7 @@
 function getDefaultConfiguration_() {
   var storage = new PropertyStore();
   return {
-    debug: true,
+    debug: false,
     debugSpreadsheetId: null,
 
     sheets: {
