@@ -58,6 +58,14 @@ FormResponses.prototype.isInitialized = function() {
     return false;
   }
 
+  // Ensure a report folder has been specified.
+  var reportsFolder = new ReportsFolder();
+  var folder = reportsFolder.folder;
+  if (folder === null) {
+    showAlert('Reports Folder', 'Please provide a folder to store reports');
+    return false;
+  }
+
   // Ensure a report filename has been specified.
   var reports = new Reports();
   var filename = reports.getFilename();
