@@ -17,7 +17,7 @@
  * Base class for report generation triggers.
  */
 var Triggers = function() {
-  this.defaultTrigger = 'automatic';
+  this.defaultTrigger = 'manual';
   this.trigger = this.getTrigger();
 };
 
@@ -60,9 +60,7 @@ Triggers.prototype.activateCurrentTrigger = function() {
   if (this.trigger === 'automatic') {
     this.enableFormResponseTrigger();
   } else {
-    var trigger = scriptTriggers[0];
-    this.disableTrigger(trigger);
-    Logger.log('scriptTriggers (OFF): ' + ScriptApp.getProjectTriggers());
+    this.disableTrigger('generateReports');
   }
   return this.trigger;
 };
@@ -85,11 +83,20 @@ Triggers.prototype.enableFormResponseTrigger = function() {
 
 
 /**
- * Removes the trigger with the given name.
+ * Removes the trigger with the given trigger function name.
+ * 
+ * @param {string} triggerFunctionName The name of the function the trigger
+ *     calls.
  */
-Triggers.prototype.disableTrigger = function(trigger) {
+Triggers.prototype.disableTrigger = function(triggerFunctionName) {
+  var scriptTriggers = ScriptApp.getProjectTriggers();
   try {
-    ScriptApp.deleteTrigger(trigger);
+    for (var i = 0; i < scriptTriggers.length; i++) {
+      var trigger = scriptTriggers[i];
+      if (trigger.getHandlerFunction() === triggerFunctionName) {
+        ScriptApp.deleteTrigger(trigger);
+      }
+    }
   } catch(e) {
     showAlert('Installable trigger error', '[deleteTrigger] Installable ' +
             'triggers cannot be tested: ' + e);
