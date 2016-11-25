@@ -39,6 +39,8 @@ Triggers.prototype.getTrigger = function() {
 
 /**
  * Stores the report trigger in the document properties.
+ * 
+ * @param {string} trigger The trigger to be stored.
  */
 Triggers.prototype.setTrigger = function(trigger) {
   var storage = new PropertyStore();

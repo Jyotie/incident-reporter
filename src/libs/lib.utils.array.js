@@ -59,7 +59,8 @@ Array.prototype.removeDuplicates = function() {
 
 
 /**
- * Returns the given array with all empty, null, and undefined elements removed.
+ * Returns the array with all empty, null, and undefined elements removed. This
+ * does not modify the original array.
  * 
  * @returns An array with no empty, null, or undefined elements.
  */
@@ -72,26 +73,18 @@ Array.prototype.removeEmpty = function() {
 
 
 /**
- * Returns the given 2D-array with all empty, null, and undefined elements
- * removed. Only the first array is used to remove empty elements. Empty
- * elements in the second array will be associated with the non-empty elements
- * of the first array.
+ * Returns the array of strings with each element converted to lower case. This
+ * does not modify the origianl array.
  * 
- * @param {array} array The array to remove empty elements from.
- * @returns An array with no empty, null, or undefined elements.
+ * @returns An array of strings converted to lower case.
  */
-function removeEmpty2D(array) {
-  var cleanedArray = [[],[]];
-  var firstArray = array[0];
-  var secondArray = array[1];
-  for (var i = 0; i < firstArray.length; i++) {
-    if (firstArray[i] !== '' && firstArray[i] !== null &&
-            firstArray[i] !== undefined) {
-      cleanedArray[0].push(firstArray[i]);
-      cleanedArray[1].push(secondArray[i]);
+Array.prototype.toLowerCase = function() {
+  var lowerCaseArray = this.map(
+    function(x) {
+      return x.toLowerCase();
     }
-  }
-  return cleanedArray;
+  );
+  return lowerCaseArray;
 }
 
 
@@ -127,20 +120,4 @@ function arraysEqual(array1, array2, sort) {
     if (a[i] !== b[i]) return false;
   }
   return true;
-}
-
-
-/**
- * Returns an array of strings with each element converted to lower case.
- * 
- * @param {array} array The array of strings to convert.
- * @returns An array of strings converted to lower case.
- */
-function arrayToLowerCase(array) {
-  var lowerCaseArray = array.map(
-    function(x) {
-      return x.toLowerCase();
-    }
-  );
-  return lowerCaseArray;
 }

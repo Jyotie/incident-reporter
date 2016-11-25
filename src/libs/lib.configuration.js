@@ -33,21 +33,5 @@ var Configuration = {
     } else {
       return defaultConfiguration;
     }
-  },
-
-  /**
-   * Returns an array of strings containing the sheet names defined in the
-   * configuration object.
-   * 
-   * @return {array} An array of strings.
-   */
-  getSheetNames: function() {
-    var config = this.getCurrent();
-    var configSheets = config.sheets;
-    var configSheetNames = [];
-    for (var sheet in configSheets) {
-      configSheetNames.push(configSheets[sheet].name);
-    }
-    return configSheetNames;
   }
 };

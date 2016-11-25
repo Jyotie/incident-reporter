@@ -100,16 +100,3 @@ BaseSpreadsheetTests.prototype.testGetSheetById = function() {
   var testSheetName = testSheet.getName();
   assertEquals_(actualSheetName, testSheetName);
 };
-
-
-/**
- * Test to confirm that the getUniqueSheetName method provides a correct
- * sheet name for a new sheet with the same name as an existing sheet.
- */
-BaseSpreadsheetTests.prototype.testGetUniqueSheetName = function() {
-  var baseName = 'Class Schedule';
-  var actualSheetName = 'Class Schedule (2)';
-  var testSpreadsheet = new BaseSpreadsheet();
-  var testSheetName = testSpreadsheet.getUniqueSheetName(baseName);
-  assertEquals_(actualSheetName, testSheetName);
-};

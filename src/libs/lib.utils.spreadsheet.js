@@ -96,8 +96,9 @@ BaseSpreadsheet.prototype.getSheetId = function(name) {
 BaseSpreadsheet.prototype.hasSheet = function(name) {
   // Google Sheets sheet names are not case sensistive. The comparisons here
   // are done in lower case to ensure no duplicates exist in the spreadsheet.
-  var lowercaseName = name.toLowerCase();  
-  var sheetNames = arrayToLowerCase(this.getSheetNames());
+  var lowercaseName = name.toLowerCase();
+  var sheetNamesArray = this.getSheetNames();  
+  var sheetNames = sheetNamesArray.toLowerCase();
   var index = sheetNames.indexOf(lowercaseName);
   var found = index > -1 ? true : false;
   return found;
@@ -134,59 +135,3 @@ BaseSpreadsheet.prototype.getSheetById = function(sheetId) {
   }
   return null;
 };
-
-
-/**
- * Returns an array of Sheet objects with the sheets defined in the
- * configuration file removed from the array. Sheets are sorted by sheet name
- * before being returned.
- * 
- * @return {array} An array of Sheet objects sorted by sheet name.
- */
-BaseSpreadsheet.prototype.getUserCreatedSheets = function() {
-  var allSheets = this.getSpreadsheet().getSheets();
-  var configSheetNames = Configuration.getSheetNames();
-  var userSheets = allSheets.filter(function(sheet) {
-    return configSheetNames.indexOf(sheet.getName()) < 0;
-  });
-  userSheets.sort(compareSheetNames_);
-  return userSheets;
-};
-
-
-/**
- * Returns a unique sheet name given a base title for a sheet. Check
- * that the given name is unique in the spreadsheet. If not, find an integer
- * suffix to append to it to make it unique and return. This function is used
- * to avoid name collisions while adding or renaming sheets automatically.
- * 
- * @param {string} baseName Initial suggested title for a sheet.
- * @return {string} A unique title for the sheet, based on the
- *     given base title.
- */
-BaseSpreadsheet.prototype.getUniqueSheetName = function(baseName) {
-  var sheetName = baseName;
-  var i = 2;
-  while (this.getSpreadsheet().getSheetByName(sheetName) !== null) {
-    sheetName = baseName + ' (' + i++ + ')';
-  }
-  return sheetName;
-};
-
-
-/**
- * Compares the sheet names of two Sheet objects and returns a numerical value
- * based on the result of the comparison (-1 if a is less than b; 1 if a is
- * greater than b; 0 if a and b are equal). 
- * 
- * @param {object} a First Sheet object for comparison.
- * @param {object} b Second Sheet object for comparison.
- * @returns {number} A number representing the result of the comparison.
- */
-function compareSheetNames_(a, b) {
-  if (a.getName() < b.getName())
-    return -1;
-  if (a.getName() > b.getName())
-    return 1;
-  return 0;
-}
