@@ -72,6 +72,19 @@ BaseFile.prototype.getUrl = function() {
 
 
 /**
+ * Returns the first parent folder of the file.
+ * 
+ * @return {Folder} A Google Folder object.
+ */
+BaseFile.prototype.getParent = function() {
+  var file = this.file;
+  var parents = file.getParents();
+  var parent = parents.next();
+  return parent;
+};
+
+
+/**
  * Copies the file to the given destination with the given name and returns
  * a BaseFile object representing the newly-created file.
  * 
@@ -104,4 +117,15 @@ BaseFile.prototype.createPdf = function(name, destination) {
   var pdfFile = destination.createFile(pdfBlob);
 
   return pdfFile;
+};
+
+
+/**
+ * Moves the file to the destination folder, removing from its parent folder.
+ */
+BaseFile.prototype.moveTo = function(destination) {
+  var file = this.file;
+  var parent = this.getParent();
+  destination.addFile(file);
+  parent.removeFile(file);
 };
